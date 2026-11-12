@@ -1,61 +1,77 @@
-import * as Device from 'expo-device';
-import { Platform, StyleSheet } from 'react-native';
+import { useEffect, useState } from 'react';
+import { ActivityIndicator, FlatList, StyleSheet } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
-import { AnimatedIcon } from '@/components/animated-icon';
-import { HintRow } from '@/components/hint-row';
 import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
-import { WebBadge } from '@/components/web-badge';
 import { BottomTabInset, MaxContentWidth, Spacing } from '@/constants/theme';
 
-function getDevMenuHint() {
-  if (Platform.OS === 'web') {
-    return <ThemedText type="small">use browser devtools</ThemedText>;
-  }
-  if (Device.isDevice) {
-    return (
-      <ThemedText type="small">
-        shake device or press <ThemedText type="code">m</ThemedText> in terminal
-      </ThemedText>
-    );
-  }
-  const shortcut = Platform.OS === 'android' ? 'cmd+m (or ctrl+m)' : 'cmd+d';
-  return (
-    <ThemedText type="small">
-      press <ThemedText type="code">{shortcut}</ThemedText>
-    </ThemedText>
-  );
+// 1. Define the structural type of your autism topic for TypeScript
+interface Topic {
+  id: string;
+  title: string;
+  category: string;
+  summary: string;
+  body: string[];
+  sources: string[];
 }
 
+// 🚀 Use your literal computer IP address here on port 3000
+const API_URL = 'http://YOUR_LOCAL_IP_ADDRESS_HERE:3000/api/topics';
+
 export default function HomeScreen() {
+  const [topics, setTopics] = useState<Topic[]>([]);
+  const [loading, setLoading] = useState<boolean>(true);
+
+  useEffect(() => {
+    fetch(API_URL)
+      .then(response => response.json())
+      .then((data: Topic[]) => {
+        setTopics(data);
+        setLoading(false);
+      })
+      .catch(error => {
+        console.error("Error connecting to backend API:", error);
+        setLoading(false);
+      });
+  }, []);
+
+  if (loading) {
+    return (
+      <ThemedView style={[styles.container, styles.center]}>
+        <ActivityIndicator size="large" color="#0000ff" />
+      </ThemedView>
+    );
+  }
+
   return (
     <ThemedView style={styles.container}>
       <SafeAreaView style={styles.safeArea}>
         <ThemedView style={styles.heroSection}>
-          <AnimatedIcon />
           <ThemedText type="title" style={styles.title}>
-            Welcome to&nbsp;Expo
+            Autism Information Portal
           </ThemedText>
         </ThemedView>
 
-        <ThemedText type="code" style={styles.code}>
-          get started
-        </ThemedText>
-
-        <ThemedView type="backgroundElement" style={styles.stepContainer}>
-          <HintRow
-            title="Try editing"
-            hint={<ThemedText type="code">src/app/index.tsx</ThemedText>}
-          />
-          <HintRow title="Dev tools" hint={getDevMenuHint()} />
-          <HintRow
-            title="Fresh start"
-            hint={<ThemedText type="code">npm run reset-project</ThemedText>}
-          />
-        </ThemedView>
-
-        {Platform.OS === 'web' && <WebBadge />}
+        <FlatList
+          data={topics}
+          keyExtractor={(item) => item.id}
+          style={styles.list}
+          contentContainerStyle={styles.listContent}
+          renderItem={({ item }) => (
+            <ThemedView type="backgroundElement" style={styles.card}>
+              <ThemedText type="small" style={styles.categoryBadge}>
+                {item.category.toUpperCase()}
+              </ThemedText>
+              <ThemedText type="subtitle" style={styles.cardTitle}>
+                {item.title}
+              </ThemedText>
+              <ThemedText type="default" style={styles.summary}>
+                {item.summary}
+              </ThemedText>
+            </ThemedView>
+          )}
+        />
       </SafeAreaView>
     </ThemedView>
   );
@@ -67,10 +83,13 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     flexDirection: 'row',
   },
+  center: {
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
   safeArea: {
     flex: 1,
     paddingHorizontal: Spacing.four,
-    alignItems: 'center',
     gap: Spacing.three,
     paddingBottom: BottomTabInset + Spacing.three,
     maxWidth: MaxContentWidth,
@@ -78,21 +97,35 @@ const styles = StyleSheet.create({
   heroSection: {
     alignItems: 'center',
     justifyContent: 'center',
-    flex: 1,
-    paddingHorizontal: Spacing.four,
-    gap: Spacing.four,
+    paddingVertical: Spacing.four,
   },
   title: {
     textAlign: 'center',
+    marginTop: Spacing.two,
   },
-  code: {
-    textTransform: 'uppercase',
+  list: {
+    flex: 1,
+    width: '100%',
   },
-  stepContainer: {
-    gap: Spacing.three,
-    alignSelf: 'stretch',
-    paddingHorizontal: Spacing.three,
-    paddingVertical: Spacing.four,
+  listContent: {
+    gap: Spacing.four,
+    paddingBottom: Spacing.four,
+  },
+  card: {
+    padding: Spacing.four,
     borderRadius: Spacing.four,
+    gap: Spacing.two,
+    width: '100%',
+  },
+  categoryBadge: {
+    color: '#0288D1',
+    fontWeight: 'bold',
+    letterSpacing: 1,
+  },
+  cardTitle: {
+    fontWeight: 'bold',
+  },
+  summary: {
+    opacity: 0.7,
   },
 });
