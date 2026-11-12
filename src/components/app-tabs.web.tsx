@@ -1,13 +1,13 @@
 import {
-  Tabs,
   TabList,
-  TabTrigger,
-  TabSlot,
-  TabTriggerSlotProps,
   TabListProps,
+  Tabs,
+  TabSlot,
+  TabTrigger,
+  TabTriggerSlotProps,
 } from 'expo-router/ui';
 import { SymbolView } from 'expo-symbols';
-import { Pressable, useColorScheme, View, StyleSheet } from 'react-native';
+import { Pressable, StyleSheet, useColorScheme, View } from 'react-native';
 
 import { Colors, MaxContentWidth, Spacing } from '@/constants/theme';
 
@@ -27,13 +27,22 @@ export default function AppTabs() {
           <TabTrigger name="explore" href="/explore" asChild>
             <TabButton>Explore</TabButton>
           </TabTrigger>
+          <TabTrigger name="glossary" href="/glossary" asChild>
+            <TabButton>Glossary</TabButton>
+          </TabTrigger>
+          <TabTrigger name="about" href="/about" asChild>
+            <TabButton>About</TabButton>
+          </TabTrigger>
+          <TabTrigger name="resources" href="/resources" asChild>
+            <TabButton>Resources</TabButton>
+          </TabTrigger>
         </CustomTabList>
       </TabList>
     </Tabs>
   );
 }
 
-export function TabButton({ children, isFocused, ...props }: TabTriggerSlotProps) {
+export function TabButton({ children, isFocused, ref, ...props }: TabTriggerSlotProps) {
   return (
     <Pressable {...props} style={({ pressed }) => pressed && styles.pressed}>
       <ThemedView
