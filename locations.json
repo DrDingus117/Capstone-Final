@@ -1,0 +1,36 @@
+{
+  "disclaimer": "Some of these locations don't have a physical address, only mailing addresses. And some of them have multiple buildings, mainly NIMH.",
+  
+  "locations": [
+    {
+      "id": "autism-society",
+      "name": "Autism Society of America",
+      "type": "National Headquarters",
+      "description": "A national organization providing autism information, resources, community connections, and support.",
+      "address": "6110 Executive Blvd, Suite 305, Rockville, MD 20852",
+      "latitude": null,
+      "longitude": null,
+      "website": "https://autismsociety.org"
+    },
+    {
+      "id": "nimh",
+      "name": "National Institute of Mental Health",
+      "type": "Administrative Headquarters",
+      "description": "An organization that conducts and supports research into mental health conditions, including autism.",
+      "address": "6001 Executive Boulevard, Rockville, MD 20852",
+      "latitude": null,
+      "longitude": null,
+      "website": "https://www.nimh.nih.gov"
+    },
+    {
+      "id": "nih-clinical-center",
+      "name": "NIH Clinical Center - Building 10",
+      "type": "Clinical Research Facility",
+      "description": "A medical research facility where clinical studies and patient care take place.",
+      "address": "10 Center Drive, Bethesda, MD 20892",
+      "latitude": null,
+      "longitude": null,
+      "website": "https://www.cc.nih.gov"
+    }
+  ]
+}

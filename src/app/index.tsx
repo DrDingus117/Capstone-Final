@@ -17,7 +17,7 @@ interface Topic {
 }
 
 // 🚀 Use your literal computer IP address here on port 3000
-const API_URL = 'http://YOUR_LOCAL_IP_ADDRESS_HERE:3000/api/topics';
+const API_URL = '192.168.56.1/api/topics';
 
 export default function HomeScreen() {
   const [topics, setTopics] = useState<Topic[]>([]);

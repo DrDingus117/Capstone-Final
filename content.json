@@ -1,0 +1,106 @@
+{
+  "disclaimer": "This site shares general information and my personal experience as an autistic person. It is not medical advice and cannot diagnose anyone. Autistic people are different from one another, so what is true for me may not be true for everyone.",
+  "topics": [
+    {
+      "id": "what-is-autism",
+      "title": "What is autism?",
+      "category": "Basics",
+      "summary": "Autism is a lifelong difference in how a person's brain processes communication, social situations, and the senses.",
+      "body": [
+        "Autism, also called autism spectrum disorder (ASD), is a neurodevelopmental condition. That means it relates to how the brain develops, and it is present from birth even if it is not noticed or diagnosed until later in life.",
+        "It is called a spectrum because autistic people are very different from one another. Some need a lot of daily support, and others live independently. Two autistic people can have very different strengths and challenges.",
+        "Common features include differences in communication and social interaction, a strong preference for routines or predictability, deep interests, and differences in how the senses work, such as being more sensitive to sound, light, touch, or texture.",
+        "I found out I was autistic around the age of 12 or 13."
+      ],
+      "sources": []
+    },
+    {
+      "id": "overstimulation",
+      "title": "Overstimulation",
+      "category": "Sensory",
+      "summary": "Overstimulation happens when there is more sensory or social input than the brain can comfortably handle.",
+      "body": [
+        "In general: Overstimulation happens when sounds, lights, crowds, textures, or conversations pile up faster than the brain can process them. It can feel like pressure, irritation, panic, or being unable to think clearly.",
+        "Many autistic people deal with it by stepping away to a quiet place, reducing noise or light, wearing headphones or sunglasses, using a repetitive movement or object that feels calming (often called stimming), or planning ahead so busy places are less of a surprise.",
+        "Sometimes overstimulation builds up all day and shows up later as a meltdown or shutdown. This is not bad behavior. It is the body reacting to too much input.",
+        "How I deal with it: When I get overstimulated, I focus on my breathing or play something to get my anger out.",
+        "If someone around you is overstimulated: Give them space, lower your voice, and ask before interacting with them."
+      ],
+      "sources": []
+    },
+    {
+      "id": "noise",
+      "title": "Noise: how I handle it vs. someone without autism",
+      "category": "Sensory",
+      "summary": "Many autistic people experience sound differently, and everyday noise can feel louder, sharper, or harder to filter out.",
+      "body": [
+        "Most people can tune out background noise, like a fan, a crowd, or a TV in another room. Many autistic people find it harder to filter sounds, so everything can feel like it is competing for attention at once.",
+        "Some sounds can be painful or distracting even at normal volumes, such as sudden noises, high-pitched sounds, or overlapping voices. Others may love certain sounds, and some autistic people seek out noise or music because it feels comforting.",
+        "How noise affects me: I can’t stand loud noises.",
+        "What helps me: I use ANC (active noise-canceling) earbuds to block the noise out, which helps keep me from getting overstimulated."
+      ],
+      "sources": []
+    },
+    {
+      "id": "hyperfixations",
+      "title": "Hyperfixations",
+      "category": "Daily Life",
+      "summary": "A hyperfixation is an intense, all-consuming focus on one interest or activity for a period of time.",
+      "body": [
+        "Many autistic people have interests they focus on very deeply. People often call these hyperfixations or special interests. The words are used a little differently in different communities, but both describe a level of focus that goes beyond a casual hobby.",
+        "These interests can be a source of joy, comfort, skill, and even careers. They can also make it hard to switch tasks, notice time passing, or remember things like eating or sleeping.",
+        "My hyperfixations: My main ones are taking electrical things apart to see how they work, and gaming.",
+        "What I want people to know: My usual hyperfixations are games like a year ago when I played Insomniac's Spider-Man 2 on Steam I had a bit of time there where I would watch a speedrun and look up interesting things."
+      ],
+      "sources": []
+    },
+    {
+      "id": "misconceptions",
+      "title": "Misconceptions",
+      "category": "Basics",
+      "summary": "Common myths about autism, and what is actually true.",
+      "body": [
+        "Myth: Autism is a disease. Reality: Autism is a neurodevelopmental condition, not an illness you catch or something that needs to be cured. It is a lifelong difference in how a person’s brain works.",
+        "Myth: All autistic people are geniuses or have a special talent. Reality: Some have exceptional skills in certain areas, but most do not. Autistic people have the same range of abilities as anyone else.",
+        "Myth: Autistic people do not feel empathy. Reality: Many autistic people feel emotions deeply. Differences in how emotions are expressed or read can make it look like a lack of empathy when it is not.",
+        "Myth: Vaccines cause autism. Reality: Large studies have found no link between vaccines and autism.",
+        "Myth: Autism only affects children, or only boys. Reality: Autistic children grow into autistic adults. Girls and women are often diagnosed later because autism can look different in them and get missed.",
+        "Myth: Everyone is a little bit autistic. Reality: Many people relate to some traits, like liking routine or finding noise annoying, but being autistic means these differences are lifelong and strongly affect daily life.",
+        "Myth: Avoiding eye contact means someone is rude or not listening. Reality: Eye contact can be uncomfortable or distracting for some autistic people, and they can listen well without it.",
+        "The ones I run into most are that autism is a disease, and that everybody has autism in some way. Autism is not a disease, and only some people are autistic. It comes with its own strengths and challenges."
+      ],
+      "sources": []
+    },
+    {
+      "id": "living-with-autism",
+      "title": "Living with autism",
+      "category": "Daily Life",
+      "summary": "What daily life can look like, and how autistic people experience the world differently.",
+      "body": [
+        "Autistic people often notice things others miss, like small details, patterns, sounds, or changes in a room. This can be a strength, and it can also be tiring when there is a lot to notice.",
+        "Social situations can take extra energy. Unspoken rules, sarcasm, and small talk may not come naturally, so many autistic people work hard to figure out what is expected. Some people call this masking, and it can be exhausting over time.",
+        "Routines and predictability help many autistic people feel safe. Sudden changes can be stressful, even small ones.",
+        "How I perceive the world: I notice small details and patterns that others might miss, and I can get overwhelmed by too much sensory input at once.",
+        "What I would like others to understand: I may need time to process social cues and can feel overwhelmed in busy environments. Understanding this can help others interact with me in a way that feels comfortable and supportive."
+      ],
+      "sources": []
+    }
+  ],
+  "resources": [
+    {
+      "name": "Autistic Self Advocacy Network (ASAN)",
+      "description": "A nonprofit run by and for autistic people that works on disability rights and shares guides written from the autistic perspective.",
+      "url": "https://autisticadvocacy.org"
+    },
+    {
+      "name": "Autism Society of America",
+      "description": "One of the oldest US autism organizations, with local chapters that offer information, support, and help finding services.",
+      "url": "https://autismsociety.org"
+    },
+    {
+      "name": "National Institute of Mental Health: Autism Spectrum Disorder",
+      "description": "A US government research institute that explains what autism is, how it is diagnosed, and how it is studied, from a medical point of view.",
+      "url": "https://www.nimh.nih.gov/health/topics/autism-spectrum-disorders-asd"
+    }
+  ]
+}
