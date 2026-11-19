@@ -1,0 +1,40 @@
+{
+  "disclaimer": "This site shares general information and my personal experience as an autistic person. It is not medical advice and cannot diagnose anyone. Autistic people are different from one another, so what is true for me may not be true for everyone.",
+  "resources": [
+    {
+      "name": "Autistic Self Advocacy Network (ASAN)",
+      "description": "A nonprofit run by and for autistic people that works on disability rights and shares guides written from the autistic perspective.",
+      "url": "https://autisticadvocacy.org"
+    },
+    {
+      "name": "Autism Society of America",
+      "description": "One of the oldest US autism organizations, with local chapters that offer information, support, and help finding services.",
+      "url": "https://autismsociety.org"
+    },
+    {
+      "name": "National Institute of Mental Health: Autism Spectrum Disorder",
+      "description": "A US government research institute that explains what autism is, how it is diagnosed, and how it is studied, from a medical point of view.",
+      "url": "https://nih.gov"
+    },
+    {
+      "name": "Autistic Women & Nonbinary Network (AWN)",
+      "description": "An autistic-led nonprofit providing community, advocacy, and accessible resources for autistic women, girls, and nonbinary people.",
+      "url": "https://awnnetwork.org"
+    },
+    {
+      "name": "Association for Autism and Neurodiversity (AANE)",
+      "description": "Offers neurodiversity-affirming support groups, coaching, and practical guides for autistic adults, teens, and families.",
+      "url": "https://aane.org"
+    },
+    {
+      "name": "AASPIRE Healthcare Toolkit",
+      "description": "Created by autistic self-advocates and researchers to help autistic adults navigate primary healthcare and communicate with doctors.",
+      "url": "https://autismandhealth.org"
+    },
+    {
+      "name": "Organization for Autism Research (OAR)",
+      "description": "Funds applied research focused on everyday quality of life and offers free practical guides for school, work, and adulthood.",
+      "url": "https://researchautism.org"
+    }
+  ]
+}
