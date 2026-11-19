@@ -35,6 +35,26 @@
       "name": "Organization for Autism Research (OAR)",
       "description": "Funds applied research focused on everyday quality of life and offers free practical guides for school, work, and adulthood.",
       "url": "https://researchautism.org"
+    },
+    {
+      "name": "CommunicationFIRST",
+      "description": "A nonprofit led by and for nonspeaking people that protects the rights of individuals who use augmentative and alternative communication (AAC).",
+      "url": "https://communicationfirst.org"
+    },
+    {
+      "name": "Therapist Neurodiversity Collective",
+      "description": "An autistic-led organization offering free educational guides and advocacy for trauma-informed, neurodiversity-affirming support.",
+      "url": "https://therapistndc.org"
+    },
+    {
+      "name": "Thinking Person's Guide to Autism",
+      "description": "An evidence-based resource hub featuring articles and practical guides written by autistic adults, professionals, and allies.",
+      "url": "http://www.thinkingautismguide.com"
+    },
+    {
+      "name": "Autism Society of Washington",
+      "description": "Provides a statewide directory of local support groups, sensory-friendly spaces, and community resources across Washington.",
+      "url": "https://www.autismsocietyofwa.org/state-resources"
     }
   ]
 }

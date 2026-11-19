@@ -84,23 +84,71 @@
         "What I would like others to understand: I may need time to process social cues and can feel overwhelmed in busy environments. Understanding this can help others interact with me in a way that feels comfortable and supportive."
       ],
       "sources": []
-    }
-  ],
-  "resources": [
-    {
-      "name": "Autistic Self Advocacy Network (ASAN)",
-      "description": "A nonprofit run by and for autistic people that works on disability rights and shares guides written from the autistic perspective.",
-      "url": "https://autisticadvocacy.org"
     },
     {
-      "name": "Autism Society of America",
-      "description": "One of the oldest US autism organizations, with local chapters that offer information, support, and help finding services.",
-      "url": "https://autismsociety.org"
+      "id": "masking-and-burnout",
+      "title": "Masking and autistic burnout",
+      "category": "Daily Life",
+      "summary": "Masking is hiding or suppressing autistic traits to fit in, which can lead to deep physical and mental exhaustion over time.",
+      "body": [
+        "Masking (sometimes called camouflaging) happens when an autistic person consciously or unconsciously copies neurotypical social behaviors, such as forcing eye contact, hiding stims, or rehearsing conversations in advance.",
+        "People often mask to avoid bullying, keep a job, or feel safe in public. Even when it helps someone blend in, it takes constant mental effort.",
+        "When masking and sensory overload build up for weeks or months without enough rest, it can trigger autistic burnout—a state of intense exhaustion, reduced tolerance to noise or stress, and difficulty doing everyday tasks.",
+        "How I experience it: I generally try masking in areas where I feel people will judge me. My social battery lasts as long as I need it to temporarily, and once I get back home, I just sit down to recharge."
+      ],
+      "sources": []
     },
     {
-      "name": "National Institute of Mental Health: Autism Spectrum Disorder",
-      "description": "A US government research institute that explains what autism is, how it is diagnosed, and how it is studied, from a medical point of view.",
-      "url": "https://www.nimh.nih.gov/health/topics/autism-spectrum-disorders-asd"
-    }
+      "id": "stimming",
+      "title": "Stimming (self-stimulatory behavior)",
+      "category": "Sensory",
+      "summary": "Stimming is repetitive movement, sound, or fidgeting that helps autistic people focus, express emotion, and calm their nervous system.",
+      "body": [
+        "Everyone stims to some degree—like tapping a foot, twirling hair, or clicking a pen when bored or nervous. For autistic people, stimming is often stronger and plays an important role in regulating sensory input.",
+        "Common stims include hand-flapping, rocking, pacing, humming, repeating phrases, or using fidget tools and textured objects.",
+        "Unless a stim causes physical harm, it should not be stopped or shamed. Stopping someone from stimming removes one of their best tools for staying calm and focused.",
+        "What helps me: When I stim, I usually tap my feet or mess with my hands by wiggling my fingers."
+      ],
+      "sources": []
+    },
+    {
+      "id": "routines-and-change",
+      "title": "Routines and unexpected changes",
+      "category": "Daily Life",
+"summary": "Predictable routines reduce uncertainty and save mental energy, while sudden changes can feel overwhelming.",
+"body": [
+"Navigating an unpredictable world takes extra processing power for an autistic brain. Routines create a reliable structure so you do not have to guess what happens next.",
+"When a schedule changes at the last minute—like a canceled plan, a detour, or a sudden shift in expectations—it forces the brain to re-process everything on the spot, which can cause stress or frustration.",
+"Giving advance notice whenever plans might change, or explaining why a change is happening, makes transitions much easier to handle.",
+"How I handle change: I have a specific time set up for everything in my routine, like doing work or taking my medicine. Unexpected changes usually bother me—if I have plans and they get canceled, it messes up my day or night and forces me to think of a backup plan on the spot."
+],
+"sources": []
+},
+{
+"id": "communication-differences",
+"title": "Direct communication and social cues",
+"category": "Basics",
+"summary": "Autistic people often communicate directly and take words at face value, rather than relying on hints or unspoken rules.",
+"body": [
+"Neurotypical communication often relies heavily on tone of voice, facial expressions, and hinting at what someone means without saying it directly.",
+"Many autistic people prefer clear, honest, and literal communication. Saying exactly what you mean prevents misunderstandings and saves everyone from guessing.",
+"Being direct is not meant to be rude—it is simply a clearer and more straightforward way of sharing information.",
+"What works best for me: I don't mind socializing as long as it is short, because after a while I start to feel a bit awkward and run out of things to say—unless I am talking with certain people I am comfortable around."
+],
+"sources": []
+},
+{
+"id": "executive-function",
+"title": "Executive function and task switching",
+"category": "Daily Life",
+"summary": "Executive function covers planning, starting tasks, and shifting attention—areas where autistic brains often work differently.",
+"body": [
+"Executive function is the brain's management system for organizing steps, keeping track of time, starting tasks, and switching from one activity to another.",
+"An autistic person might be able to focus deeply for hours on a complex project, yet feel completely stuck trying to start a simple chore because the steps feel unclear or overwhelming.",
+"Breaking big tasks into small checklists, using timers, and allowing transition time between activities can make daily tasks much more manageable.",
+"How I plan my day: When I have a quiet moment to think, I lay my day out in advance—planning when to get work done, walk home depending on the day, and take care of chores."
+],
+"sources": []
+}
   ]
 }
