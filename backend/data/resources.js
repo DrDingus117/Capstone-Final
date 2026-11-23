@@ -1,0 +1,76 @@
+// resources data (converted from resources.json)
+module.exports = {
+  "disclaimer": "This site shares general information and my personal experience as an autistic person. It is not medical advice and cannot diagnose anyone. Autistic people are different from one another, so what is true for me may not be true for everyone.",
+  "resources": [
+    {
+      "name": "Autistic Self Advocacy Network (ASAN)",
+      "description": "A nonprofit run by and for autistic people that works on disability rights and shares guides written from the autistic perspective.",
+      "url": "https://autisticadvocacy.org"
+    },
+    {
+      "name": "Autism Society of America",
+      "description": "One of the oldest US autism organizations, with local chapters that offer information, support, and help finding services.",
+      "url": "https://autismsociety.org"
+    },
+    {
+      "name": "National Institute of Mental Health: Autism Spectrum Disorder",
+      "description": "A US government research institute that explains what autism is, how it is diagnosed, and how it is studied, from a medical point of view.",
+      "url": "https://nih.gov"
+    },
+    {
+      "name": "Autistic Women & Nonbinary Network (AWN)",
+      "description": "An autistic-led nonprofit providing community, advocacy, and accessible resources for autistic women, girls, and nonbinary people.",
+      "url": "https://awnnetwork.org"
+    },
+    {
+      "name": "Association for Autism and Neurodiversity (AANE)",
+      "description": "Offers neurodiversity-affirming support groups, coaching, and practical guides for autistic adults, teens, and families.",
+      "url": "https://aane.org"
+    },
+    {
+      "name": "AASPIRE Healthcare Toolkit",
+      "description": "Created by autistic self-advocates and researchers to help autistic adults navigate primary healthcare and communicate with doctors.",
+      "url": "https://autismandhealth.org"
+    },
+    {
+      "name": "Organization for Autism Research (OAR)",
+      "description": "Funds applied research focused on everyday quality of life and offers free practical guides for school, work, and adulthood.",
+      "url": "https://researchautism.org"
+    },
+    {
+      "name": "CommunicationFIRST",
+      "description": "A nonprofit led by and for nonspeaking people that protects the rights of individuals who use augmentative and alternative communication (AAC).",
+      "url": "https://communicationfirst.org"
+    },
+    {
+      "name": "Therapist Neurodiversity Collective",
+      "description": "An autistic-led organization offering free educational guides and advocacy for trauma-informed, neurodiversity-affirming support.",
+      "url": "https://therapistndc.org"
+    },
+    {
+      "name": "Thinking Person's Guide to Autism",
+      "description": "An evidence-based resource hub featuring articles and practical guides written by autistic adults, professionals, and allies.",
+      "url": "http://www.thinkingautismguide.com"
+    },
+    {
+      "name": "Autism Society of Washington",
+      "description": "Provides a statewide directory of local support groups, sensory-friendly spaces, and community resources across Washington.",
+      "url": "https://www.autismsocietyofwa.org/state-resources"
+    },
+    {
+      "name": "Compass",
+      "description": "Compass icon for resources.",
+      "url": "https://www.flaticon.com/free-icon/compass_795653?term=compass&page=1&position=1&origin=search&related_id=795653"
+    },
+    {
+      "name": "Open Book",
+      "description": "Open book icon for glossary.",
+      "url": "https://www.flaticon.com/free-icon/open-book_171322?term=book&page=1&position=1&origin=search&related_id=171322"
+    },
+    {
+      "name": "Info",
+      "description": "Info icon for About.",
+      "url": "https://www.flaticon.com/free-icon/info_471662?term=info&page=1&position=1&origin=search&related_id=471662"
+    }
+  ]
+};
