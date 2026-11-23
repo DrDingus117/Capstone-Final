@@ -1,3 +1,8 @@
+# Adding this here
+  I had to make a new commit of my Capstone project. Why? I don't know
+  Somehwere between downloading my project from Github on my new laptop It made me make a rew repo
+
+
 # Welcome to your Expo app 👋
 
 This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
