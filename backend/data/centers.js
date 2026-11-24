@@ -106,4 +106,18 @@ module.exports = [
     services: ['ABA therapy', 'Social skills training', 'Parent and family training'],
     notes: 'Operated by Magnolia Behavior Therapy. Offers in-home, center-based, and virtual ABA programs for ages 2 to 18.',
   },
+  {
+    id: 7,
+    name: 'Magnolia Autism Center',
+    address: '2621 Bickford Ave, Suite C',
+    city: 'Snohomish',
+    state: 'WA',
+    zip: '98290',
+    lat: 47.9195,
+    lng: -122.0925,
+    phone: '360-217-8168',
+    website: 'https://magnoliabehaviortherapy.com/autism-aba-therapy-aba-therapists-snohomish-washington/',
+    services: ['ABA therapy', 'Social skills training', 'Parent and family training'],
+    notes: 'Operated by Magnolia Behavior Therapy. Offers in-home, center-based, and virtual ABA programs for ages 2 to 18.',
+  },
 ]

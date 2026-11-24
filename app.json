@@ -1,7 +1,7 @@
 {
   "expo": {
-    "name": "Capstone-Final",
-    "slug": "Capstone-Final",
+    "name": "Marcus-Capstone-Final",
+    "slug": "Marcus-Capstone-Final",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
@@ -36,11 +36,26 @@
       "expo-web-browser",
       "expo-image",
       "expo-font",
-      "expo-status-bar"
+      "expo-status-bar",
+      [
+        "expo-sqlite",
+        {
+  "expo": {
+    "web": {
+      "bundler": "metro",
+      "headers": {
+        "Cross-Origin-Embedder-Policy": "credentialless",
+        "Cross-Origin-Opener-Policy": "same-origin"
+      }
+    }
+  }
+        }
+      ]
     ],
-    "experiments": {
-      "typedRoutes": true,
-      "reactCompiler": true
+    "extra": {
+      "eas": {
+        "projectId": "f3c1d0a5-7b8e-4f2c-a9d6-0a1b8f3e4c5d"
+      }
     }
   }
 }
