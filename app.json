@@ -8,7 +8,11 @@
     "scheme": "capstonefinal",
     "userInterfaceStyle": "automatic",
     "ios": {
-      "icon": "./assets/expo.icon"
+      "icon": "./assets/expo.icon",
+      "bundleIdentifier": "com.drdingus117.MarcusCapstoneFinal",
+      "infoPlist": {
+        "ITSAppUsesNonExemptEncryption": false
+      }
     },
     "android": {
       "adaptiveIcon": {
@@ -17,11 +21,17 @@
         "backgroundImage": "./assets/images/android-icon-background.png",
         "monochromeImage": "./assets/images/android-icon-monochrome.png"
       },
-      "predictiveBackGestureEnabled": false
+      "predictiveBackGestureEnabled": false,
+      "package": "com.drdingus117.MarcusCapstoneFinal"
     },
     "web": {
+      "bundler": "metro",
       "output": "server",
-      "favicon": "./assets/images/favicon.png"
+      "favicon": "./assets/images/favicon.png",
+      "headers": {
+        "Cross-Origin-Embedder-Policy": "credentialless",
+        "Cross-Origin-Opener-Policy": "same-origin"
+      }
     },
     "plugins": [
       "expo-router",
@@ -37,24 +47,16 @@
       "expo-image",
       "expo-font",
       "expo-status-bar",
-      [
-        "expo-sqlite",
-        {
-  "expo": {
-    "web": {
-      "bundler": "metro",
-      "headers": {
-        "Cross-Origin-Embedder-Policy": "credentialless",
-        "Cross-Origin-Opener-Policy": "same-origin"
-      }
-    }
-  }
-        }
-      ]
+      "expo-sqlite"
     ],
     "extra": {
+      "router": {
+        "asyncRoutes": {
+          "web": true
+        }
+      },
       "eas": {
-        "projectId": "f3c1d0a5-7b8e-4f2c-a9d6-0a1b8f3e4c5d"
+        "projectId": "c7c58a17-0631-41e5-be50-5cbf0dd4f483"
       }
     }
   }
