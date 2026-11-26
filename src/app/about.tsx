@@ -1,4 +1,6 @@
-import { ScrollView, StyleSheet, Text, useColorScheme, View } from 'react-native';
+import { ScrollView, StyleSheet, Text, View } from 'react-native';
+
+import { useColorScheme } from '../hooks/use-color-scheme';
 
 export default function MultiSectionTemplate() {
   const isDark = useColorScheme() === 'dark';
@@ -12,7 +14,7 @@ export default function MultiSectionTemplate() {
 
   return (
     <ScrollView
-      style={{ backgroundColor: theme.bg }}
+      style={{ flex: 1, backgroundColor: theme.bg }}
       contentContainerStyle={styles.scrollContainer}
     >
       <View style={styles.mainWrapper}>

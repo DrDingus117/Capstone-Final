@@ -1,10 +1,10 @@
 import { useRouter } from 'expo-router';
-import { ActivityIndicator, FlatList, Pressable, StyleSheet } from 'react-native';
+import { ActivityIndicator, Platform, Pressable, ScrollView, StyleSheet, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
-import { BottomTabInset, MaxContentWidth, Spacing } from '@/constants/theme';
+import { MaxContentWidth, Spacing } from '@/constants/theme';
 import { useApi } from '../hooks/use-api';
 
 interface Topic {
@@ -17,7 +17,7 @@ interface Topic {
 }
 
 export default function HomeScreen() {
-  // The API address now comes from constants/api.ts, so it works on web and phone.
+  // The API address comes from constants/api.ts, so it works on web and phone.
   const { data: topics, loading, error, reload } = useApi<Topic[]>('/api/topics');
   const router = useRouter();
 
@@ -36,60 +36,58 @@ export default function HomeScreen() {
 
   return (
     <ThemedView style={styles.container}>
-      <SafeAreaView style={styles.safeArea}>
-        <ThemedView style={styles.heroSection}>
-          <ThemedText type="title" style={styles.title}>
-            Autism Information Portal: Explore, Learn, and Understand
-          </ThemedText>
-        </ThemedView>
-
-        {error && (
-          <ThemedView type="backgroundElement" style={styles.errorBox}>
-            <ThemedText type="default" style={styles.errorText}>
-              Couldn&apos;t load topics. Make sure the API is running. ({error})
-            </ThemedText>
-            <Pressable onPress={reload}>
-              <ThemedText type="small" style={styles.retryText}>
-                Try again
-              </ThemedText>
-            </Pressable>
-          </ThemedView>
-        )}
-
-        <FlatList
-          data={featured}
-          keyExtractor={(item) => String(item.id)}
-          style={styles.list}
-          contentContainerStyle={styles.listContent}
-          renderItem={({ item }) => (
-            <ThemedView type="backgroundElement" style={styles.card}>
-              <ThemedText type="small" style={styles.categoryBadge}>
-                {item.category.toUpperCase()}
-              </ThemedText>
-              <ThemedText type="subtitle" style={styles.cardTitle}>
-                {item.title}
-              </ThemedText>
-              <ThemedText type="default" style={styles.summary}>
-                {item.summary}
+      <SafeAreaView style={styles.container} edges={['top']}>
+        {/* One scrolling page: the title, the cards, and the footer all scroll together */}
+        <ScrollView style={styles.container} contentContainerStyle={styles.content}>
+          <View style={styles.inner}>
+            <ThemedView style={styles.heroSection}>
+              <ThemedText type="title" style={styles.title}>
+                Autism Information Portal: Explore, Learn, and Understand
               </ThemedText>
             </ThemedView>
-          )}
-          ListFooterComponent={
-            all.length > featured.length ? (
-              <ThemedView type="backgroundElement" style={styles.moreBox}>
-                <ThemedText type="default" style={styles.moreText}>
+
+            {error && (
+              <ThemedView type="backgroundElement" style={styles.messageBox}>
+                <ThemedText type="default" style={styles.centerText}>
+                  Couldn&apos;t load topics. Make sure the API is running. ({error})
+                </ThemedText>
+                <Pressable onPress={reload}>
+                  <ThemedText type="small" style={styles.linkText}>
+                    Try again
+                  </ThemedText>
+                </Pressable>
+              </ThemedView>
+            )}
+
+            {featured.map((item) => (
+              <ThemedView key={item.id} type="backgroundElement" style={styles.card}>
+                <ThemedText type="small" style={styles.categoryBadge}>
+                  {item.category.toUpperCase()}
+                </ThemedText>
+                <ThemedText type="subtitle" style={styles.cardTitle}>
+                  {item.title}
+                </ThemedText>
+                <ThemedText type="default" style={styles.summary}>
+                  {item.summary}
+                </ThemedText>
+              </ThemedView>
+            ))}
+
+            {all.length > featured.length && (
+              <ThemedView type="backgroundElement" style={styles.messageBox}>
+                <ThemedText type="default" style={styles.centerText}>
                   Showing {featured.length} of {all.length} topics. Open the Glossary tab to read
                   them all.
                 </ThemedText>
                 <Pressable onPress={() => router.push('/glossary' as any)}>
-                  <ThemedText type="small" style={styles.retryText}>
+                  <ThemedText type="small" style={styles.linkText}>
                     Go to Glossary →
                   </ThemedText>
                 </Pressable>
               </ThemedView>
-            ) : null
-          }
-        />
+            )}
+          </View>
+        </ScrollView>
       </SafeAreaView>
     </ThemedView>
   );
@@ -98,50 +96,46 @@ export default function HomeScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: 'center',
-    flexDirection: 'row',
   },
   center: {
     alignItems: 'center',
     justifyContent: 'center',
   },
-  safeArea: {
-    flex: 1,
+  content: {
+    alignItems: 'center',
     paddingHorizontal: Spacing.four,
-    gap: Spacing.three,
-    paddingBottom: BottomTabInset + Spacing.three,
+    paddingTop: Platform.OS === 'web' ? Spacing.four : Spacing.three,
+    paddingBottom: 48,
+  },
+  inner: {
+    width: '100%',
     maxWidth: MaxContentWidth,
+    gap: Spacing.three,
   },
   heroSection: {
     alignItems: 'center',
     justifyContent: 'center',
-    paddingVertical: Spacing.four,
+    paddingVertical: Spacing.three,
   },
   title: {
     textAlign: 'center',
     marginTop: Spacing.two,
+    // The default title size is huge on a phone, so it's smaller there.
+    ...(Platform.OS === 'web' ? {} : { fontSize: 34, lineHeight: 42 }),
   },
-  errorBox: {
+  messageBox: {
     padding: Spacing.three,
     borderRadius: Spacing.three,
     alignItems: 'center',
     gap: Spacing.two,
   },
-  errorText: {
+  centerText: {
     textAlign: 'center',
   },
-  retryText: {
+  linkText: {
     color: '#0288D1',
     fontWeight: '600',
     textDecorationLine: 'underline',
-  },
-  list: {
-    flex: 1,
-    width: '100%',
-  },
-  listContent: {
-    gap: Spacing.four,
-    paddingBottom: Spacing.four,
   },
   card: {
     padding: Spacing.four,
@@ -159,14 +153,5 @@ const styles = StyleSheet.create({
   },
   summary: {
     opacity: 0.7,
-  },
-  moreBox: {
-    padding: Spacing.three,
-    borderRadius: Spacing.three,
-    alignItems: 'center',
-    gap: Spacing.two,
-  },
-  moreText: {
-    textAlign: 'center',
   },
 });
