@@ -1,14 +1,14 @@
 import {
-    ActivityIndicator,
-    Pressable,
-    ScrollView,
-    StyleSheet,
-    Text,
-    useColorScheme,
-    View,
+  ActivityIndicator,
+  Pressable,
+  ScrollView,
+  StyleSheet,
+  Text,
+  View,
 } from 'react-native';
 
 import { useApi } from '../hooks/use-api';
+import { useColorScheme } from '../hooks/use-color-scheme';
 
 type Count = { label: string; count: number };
 

@@ -5,13 +5,13 @@ import {
   ScrollView,
   StyleSheet,
   Text,
-  useColorScheme,
   View,
 } from 'react-native';
 
 import CentersMap from '../components/centers-map';
 import { Center } from '../components/map-html';
 import { useApi } from '../hooks/use-api';
+import { useColorScheme } from '../hooks/use-color-scheme';
 
 export default function LocationsScreen() {
   const isDark = (useColorScheme() ?? 'light') === 'dark';

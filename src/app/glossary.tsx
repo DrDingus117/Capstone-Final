@@ -5,10 +5,10 @@ import {
   ScrollView,
   StyleSheet,
   Text,
-  useColorScheme,
   View,
 } from 'react-native';
 import { useApi } from '../hooks/use-api';
+import { useColorScheme } from '../hooks/use-color-scheme';
 
 type Topic = {
   id: string;

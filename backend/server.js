@@ -1,106 +1,70 @@
-// Autism awareness app API
-// Run: npm install && npm start   (serves on http://localhost:3000)
-
+// Autism awareness app API (Express 5 + SQLite)
+//   npm run seed   (once, imports the old JS data into the database)
+//   npm start      (http://localhost:3000)
 const express = require('express');
 const cors = require('cors');
+const config = require('./config');
+const store = require('./store');
 
 const app = express();
 app.use(cors());
 app.use(express.json());
 
-// ---------- Data layer ----------
-// Data lives in JavaScript modules in ./data (content.js, resources.js,
-// centers.js). Restart the server after editing them.
-const getTopics = () => require('./data/content').topics;
-const getResources = () => require('./data/resources');
-const getCenters = () => require('./data/centers');
+const { ApiError } = store;
 
-// Count items by a key, returns [{ label, count }] sorted high to low
-function countBy(items, keyFn) {
-  const counts = {};
-  for (const item of items) {
-    const keys = [].concat(keyFn(item) || 'Unknown');
-    for (const k of keys) counts[k] = (counts[k] || 0) + 1;
-  }
-  return Object.entries(counts)
-    .map(([label, count]) => ({ label, count }))
-    .sort((a, b) => b.count - a.count);
+function idParam(req, name = 'id') {
+  const n = Number(req.params[name]);
+  if (!Number.isInteger(n) || n < 1) throw new ApiError(400, 'Invalid id');
+  return n;
 }
 
-// ---------- Content routes ----------
-app.get('/api/topics', (req, res) => {
-  let topics = getTopics();
-  const { category, q } = req.query;
-  if (category) topics = topics.filter((t) => t.category.toLowerCase() === category.toLowerCase());
-  if (q) {
-    const term = q.toLowerCase();
-    topics = topics.filter((t) => `${t.title} ${t.summary}`.toLowerCase().includes(term));
-  }
-  res.json(topics);
-});
+// ---------- Topics (Glossary) ----------
+app.get('/api/topics', (req, res) => res.json(store.listTopics(req.query)));
+app.get('/api/topics/:id', (req, res) => res.json(store.getTopic(idParam(req))));
+app.post('/api/topics', (req, res) => res.status(201).json(store.createTopic(req.body)));
+app.put('/api/topics/:id', (req, res) => res.json(store.updateTopic(idParam(req), req.body)));
+app.delete('/api/topics/:id', (req, res) => { store.deleteTopic(idParam(req)); res.status(204).end(); });
 
-app.get('/api/topics/:id', (req, res) => {
-  const topic = getTopics().find((t) => t.id === req.params.id);
-  if (!topic) return res.status(404).json({ error: 'Topic not found' });
-  res.json(topic);
-});
+// ---------- Comments ----------
+app.get('/api/topics/:id/comments', (req, res) => res.json(store.listComments(idParam(req))));
+app.post('/api/topics/:id/comments', (req, res) => res.status(201).json(store.createComment(idParam(req), req.body)));
+app.get('/api/comments/:id', (req, res) => res.json(store.getComment(idParam(req))));
+app.put('/api/comments/:id', (req, res) => res.json(store.updateComment(idParam(req), req.body)));
+app.delete('/api/comments/:id', (req, res) => { store.deleteComment(idParam(req)); res.status(204).end(); });
 
-app.get('/api/resources', (req, res) => res.json(getResources()));
+// ---------- Resources ----------
+// The list keeps the shape the Resources screen already expects.
+app.get('/api/resources', (req, res) => res.json({ resources: store.listResources(), disclaimer: store.getDisclaimer() }));
+app.get('/api/resources/:id', (req, res) => res.json(store.getResource(idParam(req))));
+app.post('/api/resources', (req, res) => res.status(201).json(store.createResource(req.body)));
+app.put('/api/resources/:id', (req, res) => res.json(store.updateResource(idParam(req), req.body)));
+app.delete('/api/resources/:id', (req, res) => { store.deleteResource(idParam(req)); res.status(204).end(); });
 
-// ---------- Centers routes (feeds the map) ----------
-app.get('/api/centers', (req, res) => {
-  let centers = getCenters();
-  const { city, service } = req.query;
-  if (city) centers = centers.filter((c) => (c.city || '').toLowerCase() === city.toLowerCase());
-  if (service) {
-    centers = centers.filter((c) =>
-      (c.services || []).some((s) => s.toLowerCase().includes(service.toLowerCase()))
-    );
-  }
-  res.json(centers);
-});
+// ---------- Centers (map) ----------
+app.get('/api/centers', (req, res) => res.json(store.listCenters(req.query)));
+app.get('/api/centers/:id', (req, res) => res.json(store.getCenter(idParam(req))));
+app.post('/api/centers', (req, res) => res.status(201).json(store.createCenter(req.body)));
+app.put('/api/centers/:id', (req, res) => res.json(store.updateCenter(idParam(req), req.body)));
+app.delete('/api/centers/:id', (req, res) => { store.deleteCenter(idParam(req)); res.status(204).end(); });
 
-app.get('/api/centers/:id', (req, res) => {
-  const center = getCenters().find((c) => String(c.id) === req.params.id);
-  if (!center) return res.status(404).json({ error: 'Center not found' });
-  res.json(center);
-});
-
-// ---------- Analytics routes (Data Analytics requirement) ----------
-app.get('/api/analytics/topics-by-category', (req, res) => {
-  res.json(countBy(getTopics(), (t) => t.category));
-});
-
-app.get('/api/analytics/centers-by-city', (req, res) => {
-  res.json(countBy(getCenters(), (c) => c.city));
-});
-
-app.get('/api/analytics/services', (req, res) => {
-  res.json(countBy(getCenters(), (c) => c.services));
-});
-
-app.get('/api/analytics/summary', (req, res) => {
-  const topics = getTopics();
-  const centers = getCenters();
-  const resources = getResources().resources;
-  const wordCount = topics.reduce(
-    (sum, t) => sum + t.body.join(' ').split(/\s+/).filter(Boolean).length,
-    0
-  );
-  res.json({
-    totalTopics: topics.length,
-    totalResources: resources.length,
-    totalCenters: centers.length,
-    categories: countBy(topics, (t) => t.category).length,
-    averageWordsPerTopic: topics.length ? Math.round(wordCount / topics.length) : 0,
-    topicsWithSources: topics.filter((t) => t.sources && t.sources.length > 0).length,
-  });
-});
+// ---------- Analytics (SQL queries) ----------
+app.get('/api/analytics/summary', (req, res) => res.json(store.analyticsSummary()));
+app.get('/api/analytics/topics-by-category', (req, res) => res.json(store.topicsByCategory()));
+app.get('/api/analytics/centers-by-city', (req, res) => res.json(store.centersByCity()));
+app.get('/api/analytics/services', (req, res) => res.json(store.servicesCount()));
 
 app.get('/api/health', (req, res) => res.json({ status: 'ok' }));
 
-// 0.0.0.0 lets your phone reach the server over your Wi-Fi
-const PORT = process.env.PORT || 3000;
-app.listen(PORT, '0.0.0.0', () => {
-  console.log(`API running at http://localhost:${PORT}`);
+// ---------- Errors ----------
+app.use('/api', (req, res) => res.status(404).json({ error: 'Not found' }));
+
+app.use((err, req, res, next) => {
+  const status = err.status || 500;
+  if (status === 500) console.error(err);
+  res.status(status).json({ error: status === 500 ? 'Server error' : err.message });
+});
+
+app.listen(config.server.port, config.server.host, () => {
+  console.log(`API running at http://localhost:${config.server.port}`);
+  console.log(`Database: ${config.database.file}`);
 });

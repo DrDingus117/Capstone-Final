@@ -28,3 +28,31 @@ export function useApi<T>(path: string) {
 
   return { data, loading, error, reload: load };
 }
+
+// Sends a create (POST), update (PUT) or delete (DELETE) request to the API.
+// Throws an Error with the server's message if the request fails.
+export async function apiRequest<T = unknown>(
+  method: 'POST' | 'PUT' | 'DELETE',
+  path: string,
+  body?: unknown,
+): Promise<T> {
+  const res = await fetch(`${API_URL}${path}`, {
+    method,
+    headers: body !== undefined ? { 'Content-Type': 'application/json' } : undefined,
+    body: body !== undefined ? JSON.stringify(body) : undefined,
+  });
+
+  if (!res.ok) {
+    let message = `Server responded with ${res.status}`;
+    try {
+      const json = await res.json();
+      if (json?.error) message = json.error;
+    } catch {
+      // response had no JSON body; keep the default message
+    }
+    throw new Error(message);
+  }
+
+  if (res.status === 204) return undefined as T;
+  return (await res.json()) as T;
+}
