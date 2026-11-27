@@ -30,20 +30,15 @@ export default function MultiSectionTemplate() {
         <View style={[styles.section, { backgroundColor: theme.cardBg }]}>
           <Text style={[styles.heading, { color: theme.text }]}>About the Web/Mobile app</Text>
           <Text style={[styles.body, { color: theme.subText }]}>
-            This app was created to help teach what autism is (something simple for now doesn't hurt. I can flesh this out later and make it pretty)         </Text>
+            This app helps people learn what autism is. It has a glossary of topics with comments, a list of trusted resources, a map of autism centers in Washington, and a page of live numbers about the app's data.
+          </Text>
         </View>
 
         {/* Section 3: Footer / Extra */}
         <View style={[styles.section, { backgroundColor: theme.cardBg }]}>
           <Text style={[styles.heading, { color: theme.text }]}>Resources</Text>
           <Text style={[styles.body, { color: theme.subText }]}>
-            All icons from https://www.flaticon.com
-            Open Book free icon (Glossary) 
-            Info free icon (About)
-            Compass free icon (Resources)
-            Links are in the Resources screen
-
-
+            {'All icons from https://www.flaticon.com\nOpen Book free icon (Glossary)\nInfo free icon (About)\nCompass free icon (Resources)\nLinks are in the Resources screen'}
           </Text>
         </View>
       </View>

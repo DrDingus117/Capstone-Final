@@ -206,7 +206,114 @@ function CommentsSection({ topicId, theme }: { topicId: number; theme: Theme }) 
   );
 }
 
-function TopicDropdownCard({ topic, theme }: { topic: Topic; theme: Theme }) {
+type TopicValues = {
+  title: string;
+  category: string;
+  summary: string;
+  body: string[];
+  sources: string[];
+};
+
+// Add / edit form for a topic
+function TopicForm({
+  initial,
+  theme,
+  onSave,
+  onCancel,
+}: {
+  initial?: Topic;
+  theme: Theme;
+  onSave: (values: TopicValues) => Promise<void>;
+  onCancel: () => void;
+}) {
+  const [title, setTitle] = useState(initial?.title ?? '');
+  const [category, setCategory] = useState(initial?.category ?? '');
+  const [summary, setSummary] = useState(initial?.summary ?? '');
+  const [body, setBody] = useState((initial?.body ?? []).join('\n\n'));
+  const [sources, setSources] = useState((initial?.sources ?? []).join('\n'));
+  const [saving, setSaving] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  async function submit() {
+    if (!title.trim() || !category.trim() || !summary.trim()) {
+      setError('Please fill in the title, category, and summary.');
+      return;
+    }
+    setSaving(true);
+    setError(null);
+    try {
+      await onSave({
+        title: title.trim(),
+        category: category.trim(),
+        summary: summary.trim(),
+        // a blank line starts a new paragraph
+        body: body.split(/\n\s*\n/).map((p) => p.trim()).filter(Boolean),
+        // one source per line
+        sources: sources.split('\n').map((x) => x.trim()).filter(Boolean),
+      });
+    } catch (e) {
+      setError(e instanceof Error ? e.message : 'Something went wrong');
+      setSaving(false);
+    }
+  }
+
+  const inputStyle = [
+    styles.formInput,
+    { backgroundColor: theme.inputBg, borderColor: theme.border, color: theme.text },
+  ];
+
+  return (
+    <View style={[styles.formBox, { backgroundColor: theme.cardBg }]}>
+      <Text style={[styles.formTitle, { color: theme.text }]}>
+        {initial ? 'Edit topic' : 'Add a topic'}
+      </Text>
+
+      <Text style={[styles.formLabel, { color: theme.subText }]}>Title</Text>
+      <TextInput value={title} onChangeText={setTitle} placeholder="Topic title" placeholderTextColor={theme.subText} style={inputStyle} />
+
+      <Text style={[styles.formLabel, { color: theme.subText }]}>Category</Text>
+      <TextInput value={category} onChangeText={setCategory} placeholder="Basics, Sensory, Daily life..." placeholderTextColor={theme.subText} style={inputStyle} />
+
+      <Text style={[styles.formLabel, { color: theme.subText }]}>Summary</Text>
+      <TextInput value={summary} onChangeText={setSummary} placeholder="One or two sentences" placeholderTextColor={theme.subText} multiline style={[inputStyle, styles.formMultiline]} />
+
+      <Text style={[styles.formLabel, { color: theme.subText }]}>Full text (leave a blank line between paragraphs)</Text>
+      <TextInput value={body} onChangeText={setBody} placeholder="Write the full topic here" placeholderTextColor={theme.subText} multiline style={[inputStyle, styles.formTall]} />
+
+      <Text style={[styles.formLabel, { color: theme.subText }]}>Sources (one per line)</Text>
+      <TextInput value={sources} onChangeText={setSources} placeholder="CDC: Signs and Symptoms of Autism" placeholderTextColor={theme.subText} multiline autoCapitalize="none" style={[inputStyle, styles.formMultiline]} />
+
+      {error && <Text style={[styles.formError, { color: theme.danger }]}>{error}</Text>}
+
+      <View style={styles.topicActions}>
+        <Pressable onPress={submit} disabled={saving} style={[styles.formButton, { backgroundColor: theme.link, opacity: saving ? 0.6 : 1 }]}>
+          <Text style={styles.formButtonText}>{saving ? 'Saving...' : 'Save'}</Text>
+        </Pressable>
+        <Pressable onPress={onCancel} disabled={saving}>
+          <Text style={[styles.actionLink, { color: theme.subText }]}>Cancel</Text>
+        </Pressable>
+      </View>
+    </View>
+  );
+}
+
+function TopicDropdownCard({
+  topic,
+  theme,
+  confirming,
+  onEdit,
+  onAskDelete,
+  onCancelDelete,
+  onConfirmDelete,
+}: {
+  topic: Topic;
+  theme: Theme;
+  confirming: boolean;
+  onEdit: () => void;
+  onAskDelete: () => void;
+  onCancelDelete: () => void;
+  onConfirmDelete: () => void;
+}) {
   const [expanded, setExpanded] = useState(false);
   const [showComments, setShowComments] = useState(false);
 
@@ -274,6 +381,27 @@ function TopicDropdownCard({ topic, theme }: { topic: Topic; theme: Theme }) {
       </Pressable>
 
       {showComments && <CommentsSection topicId={topic.id} theme={theme} />}
+
+      {confirming ? (
+        <View style={styles.topicActions}>
+          <Text style={[styles.confirmText, { color: theme.text }]}>Delete this topic and its comments?</Text>
+          <Pressable onPress={onConfirmDelete}>
+            <Text style={[styles.actionLink, { color: theme.danger }]}>Yes, delete</Text>
+          </Pressable>
+          <Pressable onPress={onCancelDelete}>
+            <Text style={[styles.actionLink, { color: theme.subText }]}>Cancel</Text>
+          </Pressable>
+        </View>
+      ) : (
+        <View style={styles.topicActions}>
+          <Pressable onPress={onEdit}>
+            <Text style={[styles.actionLink, { color: theme.link }]}>Edit topic</Text>
+          </Pressable>
+          <Pressable onPress={onAskDelete}>
+            <Text style={[styles.actionLink, { color: theme.danger }]}>Delete topic</Text>
+          </Pressable>
+        </View>
+      )}
     </View>
   );
 }
@@ -295,6 +423,32 @@ export default function Glossary() {
 
   const { data: topics, loading, error, reload } = useApi<Topic[]>('/api/topics');
 
+  // 'new' = add form open, a number = that topic is being edited
+  const [editing, setEditing] = useState<number | 'new' | null>(null);
+  const [confirmDeleteId, setConfirmDeleteId] = useState<number | null>(null);
+  const [actionError, setActionError] = useState<string | null>(null);
+
+  async function save(id: number | 'new', values: TopicValues) {
+    if (id === 'new') {
+      await apiRequest('POST', '/api/topics', values);
+    } else {
+      await apiRequest('PUT', `/api/topics/${id}`, values);
+    }
+    setEditing(null);
+    reload();
+  }
+
+  async function remove(id: number) {
+    setActionError(null);
+    try {
+      await apiRequest('DELETE', `/api/topics/${id}`);
+      setConfirmDeleteId(null);
+      reload();
+    } catch (e) {
+      setActionError(e instanceof Error ? e.message : 'Could not delete that topic');
+    }
+  }
+
   return (
     <ScrollView
       style={{ flex: 1, backgroundColor: theme.bg }}
@@ -305,7 +459,7 @@ export default function Glossary() {
           Topics & Experiences
         </Text>
 
-        {loading && <ActivityIndicator color={theme.link} />}
+        {loading && !topics && <ActivityIndicator color={theme.link} />}
 
         {error && (
           <View style={[styles.statusBox, { backgroundColor: theme.cardBg }]}>
@@ -318,9 +472,50 @@ export default function Glossary() {
           </View>
         )}
 
-        {topics?.map((topic) => (
-          <TopicDropdownCard key={topic.id} topic={topic} theme={theme} />
-        ))}
+        {actionError && (
+          <Text style={[styles.formError, { color: theme.danger }]}>{actionError}</Text>
+        )}
+
+        {topics && editing === 'new' && (
+          <TopicForm theme={theme} onSave={(values) => save('new', values)} onCancel={() => setEditing(null)} />
+        )}
+        {topics && editing !== 'new' && (
+          <Pressable
+            onPress={() => {
+              setEditing('new');
+              setConfirmDeleteId(null);
+            }}
+            style={[styles.formButton, styles.addButton, { backgroundColor: theme.link }]}
+          >
+            <Text style={styles.formButtonText}>+ Add topic</Text>
+          </Pressable>
+        )}
+
+        {topics?.map((topic) =>
+          editing === topic.id ? (
+            <TopicForm
+              key={topic.id}
+              initial={topic}
+              theme={theme}
+              onSave={(values) => save(topic.id, values)}
+              onCancel={() => setEditing(null)}
+            />
+          ) : (
+            <TopicDropdownCard
+              key={topic.id}
+              topic={topic}
+              theme={theme}
+              confirming={confirmDeleteId === topic.id}
+              onEdit={() => {
+                setEditing(topic.id);
+                setConfirmDeleteId(null);
+              }}
+              onAskDelete={() => setConfirmDeleteId(topic.id)}
+              onCancelDelete={() => setConfirmDeleteId(null)}
+              onConfirmDelete={() => remove(topic.id)}
+            />
+          ),
+        )}
       </View>
     </ScrollView>
   );
@@ -473,5 +668,71 @@ const styles = StyleSheet.create({
     color: '#FFFFFF',
     fontSize: 14,
     fontWeight: '700',
+  },
+  // ----- topic forms -----
+  formBox: {
+    width: '100%',
+    padding: 20,
+    borderRadius: 12,
+    gap: 4,
+  },
+  formTitle: {
+    fontSize: 18,
+    fontWeight: '700',
+    marginBottom: 8,
+  },
+  formLabel: {
+    fontSize: 13,
+    fontWeight: '600',
+    marginTop: 8,
+    marginBottom: 4,
+  },
+  formInput: {
+    borderWidth: 1,
+    borderRadius: 8,
+    paddingVertical: 10,
+    paddingHorizontal: 12,
+    fontSize: 15,
+  },
+  formMultiline: {
+    minHeight: 70,
+    textAlignVertical: 'top',
+  },
+  formTall: {
+    minHeight: 180,
+    textAlignVertical: 'top',
+  },
+  formError: {
+    fontSize: 14,
+    marginTop: 8,
+  },
+  formButton: {
+    paddingVertical: 10,
+    paddingHorizontal: 18,
+    borderRadius: 8,
+    alignItems: 'center',
+  },
+  formButtonText: {
+    color: '#FFFFFF',
+    fontSize: 15,
+    fontWeight: '700',
+  },
+  addButton: {
+    alignSelf: 'flex-start',
+  },
+  topicActions: {
+    width: '100%',
+    flexDirection: 'row',
+    alignItems: 'center',
+    flexWrap: 'wrap',
+    gap: 16,
+    marginTop: 6,
+  },
+  actionLink: {
+    fontSize: 15,
+    fontWeight: '600',
+  },
+  confirmText: {
+    fontSize: 15,
   },
 });
