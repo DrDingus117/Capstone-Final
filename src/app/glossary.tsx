@@ -362,6 +362,20 @@ function TopicDropdownCard({
               {paragraph}
             </Text>
           ))}
+
+          {topic.sources.length > 0 && (
+            <View style={styles.sourcesBlock}>
+              <Text style={[styles.sourcesTitle, { color: theme.text }]}>Sources</Text>
+              {topic.sources.map((source, index) => (
+                <Text
+                  key={`${topic.id}-s-${index}`}
+                  style={[styles.sourceText, { color: theme.subText }]}
+                >
+                  • {source}
+                </Text>
+              ))}
+            </View>
+          )}
         </View>
       )}
 
@@ -734,5 +748,17 @@ const styles = StyleSheet.create({
   },
   confirmText: {
     fontSize: 15,
+  },
+  sourcesBlock: {
+    gap: 4,
+    marginTop: 4,
+  },
+  sourcesTitle: {
+    fontSize: 14,
+    fontWeight: '700',
+  },
+  sourceText: {
+    fontSize: 13,
+    lineHeight: 19,
   },
 });

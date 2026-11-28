@@ -1,4 +1,14 @@
 // All database reads and writes live here. server.js only handles HTTP.
+//
+// BIG O NOTES
+//   n = rows in the table being queried
+//   k = rows belonging to one record (a topic's paragraphs, a center's services)
+//   m = rows in the child table (all paragraphs, all comments, ...)
+//   SQLite stores each table and index as a B-tree, so:
+//     - finding a row by its primary key or an indexed column is O(log n)
+//     - scanning a table without a usable index is O(n)
+//   schema.sql adds indexes on the foreign key columns (topic_id, center_id), so
+//   looking up a record's children costs O(log m + k) instead of O(m).
 const db = require('./db');
 
 class ApiError extends Error {
@@ -8,6 +18,8 @@ class ApiError extends Error {
   }
 }
 
+// A transaction groups several writes so they all succeed or all roll back.
+// Adds O(1) overhead on top of the queries inside it.
 function tx(fn) {
   db.exec('BEGIN');
   try {
@@ -40,12 +52,16 @@ function needNumber(data, field, min, max) {
 }
 
 // ==================== TOPICS ====================
+// Two indexed lookups (paragraphs, sources): O(log m + k).
 function loadTopic(row) {
   const body = db.prepare('SELECT body FROM topic_paragraphs WHERE topic_id = ? ORDER BY position').all(row.id).map((r) => r.body);
   const sources = db.prepare('SELECT source FROM topic_sources WHERE topic_id = ? ORDER BY position').all(row.id).map((r) => r.source);
   return { ...row, body, sources };
 }
 
+// Reads the whole table (a filter on category or title can't use an index, so it
+// still scans): O(n). Then loadTopic runs once per topic (the "N+1" pattern):
+// O(n log m) overall.
 function listTopics({ category, q } = {}) {
   const where = [];
   const params = [];
@@ -55,6 +71,7 @@ function listTopics({ category, q } = {}) {
   return db.prepare(sql).all(...params).map(loadTopic);
 }
 
+// Primary key lookup O(log n), plus loadTopic O(log m + k).
 function getTopic(id) {
   const row = db.prepare('SELECT id, slug, title, category, summary FROM topics WHERE id = ?').get(id);
   if (!row) throw new ApiError(404, 'Topic not found');
@@ -66,6 +83,7 @@ function writeTopicChildren(topicId, data) {
   list(data.sources).forEach((s, i) => db.prepare('INSERT INTO topic_sources (topic_id, position, source) VALUES (?, ?, ?)').run(topicId, i, s));
 }
 
+// Insert O(log n), then k inserts into indexed child tables: O(log n + k log m).
 function createTopic(data) {
   need(data, ['title', 'category', 'summary']);
   const id = tx(() => {
@@ -78,6 +96,7 @@ function createTopic(data) {
   return getTopic(id);
 }
 
+// Lookup + update O(log n); delete and re-insert the k children: O(k log m).
 function updateTopic(id, data) {
   getTopic(id); // 404 if missing
   need(data, ['title', 'category', 'summary']);
@@ -90,23 +109,28 @@ function updateTopic(id, data) {
   return getTopic(id);
 }
 
+// Delete by primary key O(log n). ON DELETE CASCADE then removes the topic's
+// paragraphs, sources and comments by index: O((k + c) log m), c = its comments.
 function deleteTopic(id) {
   const info = db.prepare('DELETE FROM topics WHERE id = ?').run(id);
   if (info.changes === 0) throw new ApiError(404, 'Topic not found');
 }
 
 // ==================== COMMENTS ====================
+// Indexed lookup by topic_id: O(log m + c), c = comments on this topic.
 function listComments(topicId) {
   getTopic(topicId);
   return db.prepare('SELECT id, topic_id, author, body, created_at FROM comments WHERE topic_id = ? ORDER BY id').all(topicId);
 }
 
+// Primary key lookup: O(log m).
 function getComment(id) {
   const row = db.prepare('SELECT id, topic_id, author, body, created_at FROM comments WHERE id = ?').get(id);
   if (!row) throw new ApiError(404, 'Comment not found');
   return row;
 }
 
+// Topic check O(log n) + insert O(log m).
 function createComment(topicId, data) {
   getTopic(topicId);
   need(data, ['body']);
@@ -115,6 +139,7 @@ function createComment(topicId, data) {
   return getComment(Number(info.lastInsertRowid));
 }
 
+// Primary key lookup and update: O(log m).
 function updateComment(id, data) {
   getComment(id);
   need(data, ['body']);
@@ -123,6 +148,7 @@ function updateComment(id, data) {
   return getComment(id);
 }
 
+// Delete by primary key: O(log m).
 function deleteComment(id) {
   const info = db.prepare('DELETE FROM comments WHERE id = ?').run(id);
   if (info.changes === 0) throw new ApiError(404, 'Comment not found');
@@ -131,27 +157,32 @@ function deleteComment(id) {
 // ==================== RESOURCES ====================
 const RESOURCE_COLS = 'id, name, description, url';
 
+// Full table read: O(n).
 function listResources() {
   return db.prepare(`SELECT ${RESOURCE_COLS} FROM resources ORDER BY id`).all();
 }
 
+// Settings table is tiny and looked up by its primary key (section, key): O(log s).
 function getDisclaimer() {
   const row = db.prepare("SELECT setting_value FROM settings WHERE section = 'resources' AND setting_key = 'disclaimer'").get();
   return row ? row.setting_value : '';
 }
 
+// Primary key lookup: O(log n).
 function getResource(id) {
   const row = db.prepare(`SELECT ${RESOURCE_COLS} FROM resources WHERE id = ?`).get(id);
   if (!row) throw new ApiError(404, 'Resource not found');
   return row;
 }
 
+// Insert: O(log n).
 function createResource(data) {
   need(data, ['name', 'description', 'url']);
   const info = db.prepare('INSERT INTO resources (name, description, url) VALUES (?, ?, ?)').run(text(data.name), text(data.description), text(data.url));
   return getResource(Number(info.lastInsertRowid));
 }
 
+// Primary key lookup and update: O(log n).
 function updateResource(id, data) {
   getResource(id);
   need(data, ['name', 'description', 'url']);
@@ -159,6 +190,7 @@ function updateResource(id, data) {
   return getResource(id);
 }
 
+// Delete by primary key: O(log n).
 function deleteResource(id) {
   const info = db.prepare('DELETE FROM resources WHERE id = ?').run(id);
   if (info.changes === 0) throw new ApiError(404, 'Resource not found');
@@ -167,11 +199,14 @@ function deleteResource(id) {
 // ==================== CENTERS ====================
 const CENTER_COLS = 'c.id, c.name, c.address, c.city, c.state, c.zip, c.lat, c.lng, c.phone, c.website, c.notes';
 
+// Indexed lookup of this center's services: O(log m + k).
 function loadCenter(row) {
   const services = db.prepare('SELECT service FROM center_services WHERE center_id = ? ORDER BY id').all(row.id).map((r) => r.service);
   return { ...row, services };
 }
 
+// Filtering by city scans the table: O(n). Filtering by service runs an indexed
+// EXISTS check per center: O(n log m). loadCenter per center (N+1): O(n log m).
 function listCenters({ city, service } = {}) {
   const where = [];
   const params = [];
@@ -184,6 +219,7 @@ function listCenters({ city, service } = {}) {
   return db.prepare(sql).all(...params).map(loadCenter);
 }
 
+// Primary key lookup O(log n), plus loadCenter O(log m + k).
 function getCenter(id) {
   const row = db.prepare(`SELECT ${CENTER_COLS} FROM centers c WHERE c.id = ?`).get(id);
   if (!row) throw new ApiError(404, 'Center not found');
@@ -203,6 +239,7 @@ function writeServices(centerId, data) {
   list(data.services).forEach((s) => db.prepare('INSERT INTO center_services (center_id, service) VALUES (?, ?)').run(centerId, s));
 }
 
+// Insert O(log n) + k service inserts: O(log n + k log m).
 function createCenter(data) {
   const f = centerFields(data);
   const id = tx(() => {
@@ -215,6 +252,7 @@ function createCenter(data) {
   return getCenter(id);
 }
 
+// Update O(log n); delete and re-insert k services: O(k log m).
 function updateCenter(id, data) {
   getCenter(id);
   const f = centerFields(data);
@@ -227,6 +265,7 @@ function updateCenter(id, data) {
   return getCenter(id);
 }
 
+// Delete by primary key O(log n); cascade removes services by index: O(k log m).
 function deleteCenter(id) {
   const info = db.prepare('DELETE FROM centers WHERE id = ?').run(id);
   if (info.changes === 0) throw new ApiError(404, 'Center not found');
@@ -235,6 +274,8 @@ function deleteCenter(id) {
 // ==================== ANALYTICS (SQL aggregates) ====================
 const count = (sql) => db.prepare(sql).get().n;
 
+// SQLite does not keep row counts, so each COUNT(*) scans its table: O(n).
+// COUNT(DISTINCT ...) and the word count also read every row: O(n) to O(n log n).
 function analyticsSummary() {
   const totalTopics = count('SELECT COUNT(*) AS n FROM topics');
   const words = db.prepare(
@@ -251,8 +292,11 @@ function analyticsSummary() {
   };
 }
 
+// GROUP BY scans the table and groups with a temporary B-tree: O(n log n).
 const topicsByCategory = () => db.prepare('SELECT category AS label, COUNT(*) AS count FROM topics GROUP BY category ORDER BY count DESC, label').all();
+// GROUP BY scan: O(n log n).
 const centersByCity = () => db.prepare('SELECT city AS label, COUNT(*) AS count FROM centers GROUP BY city ORDER BY count DESC, label').all();
+// GROUP BY over the services table: O(m log m).
 const servicesCount = () => db.prepare('SELECT service AS label, COUNT(*) AS count FROM center_services GROUP BY service ORDER BY count DESC, label').all();
 
 module.exports = {

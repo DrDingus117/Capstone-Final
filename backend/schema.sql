@@ -71,3 +71,12 @@ CREATE TABLE IF NOT EXISTS settings (
   setting_value TEXT NOT NULL,
   PRIMARY KEY (section, setting_key)
 );
+
+-- ===== INDEXES =====
+-- SQLite does not index foreign key columns on its own. These let it jump straight
+-- to a topic's paragraphs, sources and comments (and a center's services) instead of
+-- scanning the whole table, which also speeds up ON DELETE CASCADE.
+CREATE INDEX IF NOT EXISTS idx_topic_paragraphs_topic ON topic_paragraphs (topic_id, position);
+CREATE INDEX IF NOT EXISTS idx_topic_sources_topic    ON topic_sources (topic_id, position);
+CREATE INDEX IF NOT EXISTS idx_comments_topic         ON comments (topic_id);
+CREATE INDEX IF NOT EXISTS idx_center_services_center ON center_services (center_id);
